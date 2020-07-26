@@ -58,7 +58,7 @@ namespace spv {
 #include "../glslang/Include/Common.h"
 
 // Build-time generated includes
-#include "glslang/build_info.h"
+#include "build_info.h"
 
 #include <fstream>
 #include <iomanip>
@@ -1615,7 +1615,7 @@ TGlslangToSpvTraverser::TGlslangToSpvTraverser(unsigned int spvVersion,
     case EShLangAnyHit:
     case EShLangClosestHit:
     case EShLangMiss:
-    case EShLangCallable: 
+    case EShLangCallable:
     {
         auto& extensions = glslangIntermediate->getRequestedExtensions();
         if (extensions.find("GL_NV_ray_tracing") == extensions.end()) {
@@ -2196,7 +2196,7 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
         operandNode = node->getOperand()->getAsBinaryNode()->getLeft();
     else
         operandNode = node->getOperand();
-    
+
     operandNode->traverse(this);
 
     spv::Id operand = spv::NoResult;
@@ -3068,7 +3068,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
             break;
         case 1:
             {
-                OpDecorations decorations = { precision, 
+                OpDecorations decorations = { precision,
                                               TranslateNoContractionDecoration(node->getType().getQualifier()),
                                               TranslateNonUniformDecoration(node->getType().getQualifier()) };
                 result = createUnaryOperation(
@@ -3189,7 +3189,7 @@ bool TGlslangToSpvTraverser::visitSelection(glslang::TVisit /* visit */, glslang
             // smear condition to vector, if necessary (AST is always scalar)
             // Before 1.4, smear like for mix(), starting with 1.4, keep it scalar
             if (glslangIntermediate->getSpv().spv < glslang::EShTargetSpv_1_4 && builder.isVector(trueValue)) {
-                condition = builder.smearScalar(spv::NoPrecision, condition, 
+                condition = builder.smearScalar(spv::NoPrecision, condition,
                                                 builder.makeVectorType(builder.makeBoolType(),
                                                                        builder.getNumComponents(trueValue)));
             }
@@ -5209,10 +5209,10 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         assert(builder.isStructType(resultStructType));
 
         //resType (SPIR-V type) contains 6 elements:
-        //Member 0 must be a Boolean type scalar(LOD), 
-        //Member 1 must be a vector of integer type, whose Signedness operand is 0(anchor),  
-        //Member 2 must be a vector of integer type, whose Signedness operand is 0(offset), 
-        //Member 3 must be a vector of integer type, whose Signedness operand is 0(mask), 
+        //Member 0 must be a Boolean type scalar(LOD),
+        //Member 1 must be a vector of integer type, whose Signedness operand is 0(anchor),
+        //Member 2 must be a vector of integer type, whose Signedness operand is 0(offset),
+        //Member 3 must be a vector of integer type, whose Signedness operand is 0(mask),
         //Member 4 must be a scalar of integer type, whose Signedness operand is 0(lod),
         //Member 5 must be a scalar of integer type, whose Signedness operand is 0(granularity).
         std::vector<spv::Id> members;
@@ -5225,7 +5225,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
         //call ImageFootprintNV
         spv::Id res = builder.createTextureCall(precision, resType, sparse, cracked.fetch, cracked.proj,
                                                 cracked.gather, noImplicitLod, params, signExtensionMask());
-        
+
         //copy resType (SPIR-V type) to resultStructType(OpenGL type)
         for (int i = 0; i < 5; i++) {
             builder.clearAccessChain();
@@ -5278,7 +5278,7 @@ spv::Id TGlslangToSpvTraverser::createImageTextureFunctionCall(glslang::TIntermO
     }
 #endif
 
-    std::vector<spv::Id> result( 1, 
+    std::vector<spv::Id> result( 1,
         builder.createTextureCall(precision, resultType(), sparse, cracked.fetch, cracked.proj, cracked.gather,
                                   noImplicitLod, params, signExtensionMask())
     );
@@ -6768,7 +6768,7 @@ spv::Id TGlslangToSpvTraverser::createAtomicOperation(glslang::TOperator op, spv
     } else {
         scopeId = builder.makeUintConstant(spv::ScopeDevice);
     }
-    // semantics default to relaxed 
+    // semantics default to relaxed
     spv::Id semanticsId = builder.makeUintConstant(lvalueCoherentFlags.isVolatile() &&
         glslangIntermediate->usingVulkanMemoryModel() ?
                                                     spv::MemorySemanticsVolatileMask :
