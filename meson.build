@@ -121,7 +121,7 @@ lib_glslang = library('glslang',
 	dependencies: dependency('threads'),
 	cpp_args: args)
 
-dep_glslang = declare_dependency(
+glslang_dep = declare_dependency(
 	link_with: lib_glslang,
 	include_directories: inc,
 )
