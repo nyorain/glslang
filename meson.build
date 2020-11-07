@@ -108,12 +108,17 @@ else
     args += '-DGLSLANG_OSINCLUDE_UNIX'
 endif
 
-build_info_py = files('build_info.py')
-build_info_h = custom_target(
-	'build_info.h',
-	output: 'build_info.h',
-	input: 'build_info.h.tmpl',
-	command: [build_info_py, meson.current_source_dir(), '-i', '@INPUT@', '-o', '@OUTPUT@'])
+python = find_program('python', required: false)
+if python.found()
+  build_info_py = files('build_info.py')
+  build_info_h = custom_target(
+    'build_info.h',
+    output: 'build_info.h',
+    input: 'build_info.h.tmpl',
+    command: [python, build_info_py, meson.current_source_dir(), '-i', '@INPUT@', '-o', '@OUTPUT@'])
+ else
+  build_info_h = files('build_info.h')
+ endif
 
 lib_glslang = library('glslang',
 	[sources, build_info_h],
