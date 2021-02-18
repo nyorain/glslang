@@ -6,6 +6,13 @@ project('glslang', ['cpp', 'c'],
   		'warning_level=3',
   		'werror=false'])
 
+spirv_tools_dep = dependency('SPIRV-Tools', required: false)
+
+args = []
+if spirv_tools_dep.found()
+	args += '-DENABLE_OPT=1'
+endif
+
 sources = files(
   'SPIRV/GlslangToSpv.cpp',
   'SPIRV/InReadableOrder.cpp',
@@ -99,7 +106,6 @@ headers = files(
 )
 
 inc = include_directories('.')
-args = []
 if target_machine.system() == 'windows'
 	sources += files('glslang/OSDependent/Windows/ossource.cpp')
 	args += '-DGLSLANG_OSINCLUDE_WIN32'
@@ -123,7 +129,7 @@ if python.found()
 lib_glslang = library('glslang',
 	[sources, build_info_h],
 	include_directories: inc,
-	dependencies: dependency('threads'),
+	dependencies: [dependency('threads'), spirv_tools_dep],
 	cpp_args: args)
 
 glslang_dep = declare_dependency(
