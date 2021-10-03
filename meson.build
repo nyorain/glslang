@@ -54,7 +54,9 @@ sources = files(
   'glslang/MachineIndependent/preprocessor/PpTokens.cpp',
   'glslang/MachineIndependent/propagateNoContraction.cpp',
   'glslang/MachineIndependent/reflection.cpp',
+  'glslang/MachineIndependent/SpirvIntrinsics.cpp',
   'glslang/OSDependent/osinclude.h',
+  'OGLCompilersDLL/InitializeDll.cpp',
 )
 
 headers = files(
