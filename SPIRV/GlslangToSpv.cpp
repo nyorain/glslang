@@ -1928,6 +1928,7 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
             id = translateForcedType(id);
     }
 
+
     // Only process non-linkage-only nodes for generating actual static uses
     if (! linkageOnly || symbol->getQualifier().isSpecConstant()) {
         // Prepare to generate code for the access
@@ -1950,6 +1951,10 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
             builder.setAccessChainRValue(id);
         else
             builder.setAccessChainLValue(id);
+
+		// if (!symbol->getName().empty()) {
+		// 	builder.addName(id, symbol->getName().c_str());
+		// }
     }
 
 #ifdef ENABLE_HLSL
@@ -2051,6 +2056,10 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                 // these all need their counterparts in createBinaryOperation()
                 assert(rValue != spv::NoResult);
             }
+
+			// if (node->getLeft()->getAsSymbolNode() && !node->getLeft()->getAsSymbolNode()->getName().empty()) {
+			// 	builder.addName(rValue, node->getLeft()->getAsSymbolNode()->getName().c_str());
+			// }
 
             // store the result
             builder.setAccessChain(lValue);
@@ -3090,6 +3099,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         left->traverse(this);
         spv::Id leftId = accessChainLoad(left->getType());
 
+		// if (left->getAsSymbolNode() && !left->getAsSymbolNode()->getName().empty()) {
+        	// builder.addName(leftId, left->getAsSymbolNode()->getName().c_str());
+		// }
+
         builder.clearAccessChain();
         right->traverse(this);
         spv::Id rightId = accessChainLoad(right->getType());
@@ -3452,6 +3465,10 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         logger->missingFunctionality("unknown glslang aggregate");
         return true;  // pick up a child as a placeholder operand
     } else {
+		// if (!node->getName().empty()) {
+        	// builder.addName(result, node->getName().c_str());
+		// }
+
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
         return false;
@@ -5879,7 +5896,7 @@ spv::Id TGlslangToSpvTraverser::handleUserFunctionCall(const glslang::TIntermAgg
         } else if (writableParam(qualifiers[a])) {
             // need space to hold the copy
             arg = builder.createVariable(function->getParamPrecision(a), spv::StorageClassFunction,
-                builder.getContainedTypeId(function->getParamType(a)), "param");
+                builder.getContainedTypeId(function->getParamType(a)), /*"param"*/ nullptr);
             if (qualifiers[a] == glslang::EvqIn || qualifiers[a] == glslang::EvqInOut) {
                 // need to copy the input into output space
                 builder.setAccessChain(lValues[lValueCount]);
