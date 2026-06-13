@@ -6,11 +6,17 @@ project('glslang', ['cpp', 'c'],
   		'warning_level=3',
   		'werror=false'])
 
-spirv_tools_dep = dependency('SPIRV-Tools', required: false)
-
+deps = dependency('threads')
 args = []
-if spirv_tools_dep.found()
-	args += '-DENABLE_OPT=1'
+
+with_spirv_opt = get_option('with-spirv-opt')
+if with_spirv_opt
+	spirv_tools_dep = dependency('SPIRV-Tools', required: false)
+	deps += [spirv_tools_dep]
+
+	if spirv_tools_dep.found()
+		args += '-DENABLE_OPT=1'
+	endif
 endif
 
 sources = files(
@@ -131,7 +137,7 @@ if python.found()
 lib_glslang = library('glslang',
 	[sources, build_info_h],
 	include_directories: inc,
-	dependencies: [dependency('threads'), spirv_tools_dep],
+	dependencies: deps,
 	cpp_args: args)
 
 glslang_dep = declare_dependency(

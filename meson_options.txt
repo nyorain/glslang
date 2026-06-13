@@ -1,0 +1,2 @@
+option('with-spirv-opt', type: 'boolean', value: true)
+
