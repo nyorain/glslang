@@ -6,7 +6,7 @@ project('glslang', ['cpp', 'c'],
   		'warning_level=3',
   		'werror=false'])
 
-deps = dependency('threads')
+deps = [dependency('threads')]
 args = []
 
 with_spirv_opt = get_option('with-spirv-opt')
